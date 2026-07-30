@@ -43,10 +43,14 @@ export const getAllTripsService = async (filters: any = {}) => {
   const parsedPriceMax = priceMax != null && String(priceMax).trim() !== "" ? Number(priceMax) : null;
   const parsedSeats = seats != null && String(seats).trim() !== "" ? Number(seats) : null;
 
-  const where: any = {
-    departureCity: { contains: departure, mode: 'insensitive' },
-    arrivalCity: { contains: arrival, mode: 'insensitive' },
-  };
+  const where: any = {};
+
+  if (departure && String(departure).trim() !== "") {
+    where.departureCity = { contains: String(departure).trim(), mode: 'insensitive' };
+  }
+  if (arrival && String(arrival).trim() !== "") {
+    where.arrivalCity = { contains: String(arrival).trim(), mode: 'insensitive' };
+  }
 
   // Places disponibles
   if (parsedSeats != null && Number.isFinite(parsedSeats) && parsedSeats > 0) {

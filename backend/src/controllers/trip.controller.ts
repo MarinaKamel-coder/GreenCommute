@@ -35,6 +35,7 @@ export const getTrips = async (req: Request, res: Response) => {
         const trips = await tripService.getAllTripsService(filters);
         return res.status(200).json(trips);
     } catch (error) {
+        console.error('Erreur getTrips:', error);
         return res.status(500).json({ message: 'Erreur lors de la recherche' });
     }
 };
