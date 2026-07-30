@@ -33,8 +33,6 @@ export const userController = {
       return res.status(500).json({ success: false, message: 'Erreur dashboard' });
     }
   },
-  
-
   /**
    * GET /profile - Profil utilisateur et véhicules
    */
@@ -109,6 +107,15 @@ return res.status(200).json({ success: true, data: { user: userRecord, stats } }
           rating: true,
           role: true,
           createdAt: true,
+          vehicles: {
+            select: {
+              id: true,
+              brand: true,
+              model: true,
+              color: true,
+              fuelType: true,
+            },
+          },
           tripsPosted: {
             where: { departureTime: { gt: now } },
             orderBy: { departureTime: "asc" },
@@ -128,7 +135,18 @@ return res.status(200).json({ success: true, data: { user: userRecord, stats } }
         return res.status(404).json({ success: false, message: "Utilisateur non trouvé" });
       }
 
-      return res.status(200).json({ success: true, data: { user: userRecord } });
+      const stats = await getUserCompleteStatsLogic(userId);
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          user: {
+            ...userRecord,
+            tripsCompleted: stats.tripsCompleted,
+            totalCO2Saved: stats.totalCO2Saved,
+          },
+        },
+      });
     } catch {
       return res.status(500).json({ success: false, message: "Erreur profil public" });
     }

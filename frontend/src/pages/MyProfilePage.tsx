@@ -63,7 +63,7 @@ export function MyProfilePage() {
 
       const response = await apiFetch<any>("/api/users/profile", {
         method: "PUT",
-        token, 
+        token,
         body: formData
       });
       if (response.success) {

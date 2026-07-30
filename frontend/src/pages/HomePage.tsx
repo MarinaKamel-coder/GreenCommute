@@ -137,7 +137,7 @@ export function HomePage() {
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
               />
-              <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+              <input type="date" aria-label="date" value={date} onChange={(e) => setDate(e.target.value)} />
             </div>
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <button type="submit">Rechercher</button>

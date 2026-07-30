@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 
 export type AuthUser = {
+	sub: number;
 	email: string;
 	firstName?: string | null;
 	lastName?: string | null;

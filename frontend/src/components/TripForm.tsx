@@ -120,12 +120,12 @@ export default function TripForm({ onTripAdded }: Props) {
 
             <div className="gc-grid" style={{ gap: 6 }}>
                 <label>Ville de départ</label>
-                <input value={departureCity} onChange={(e) => setDepartureCity(e.target.value)} required />
+                <input value={departureCity} aria-label='depaturecity' onChange={(e) => setDepartureCity(e.target.value)} required />
             </div>
 
             <div className="gc-grid" style={{ gap: 6 }}>
                 <label>Ville d'arrivée</label>
-                <input value={arrivalCity} onChange={(e) => setArrivalCity(e.target.value)} required />
+                <input value={arrivalCity} aria-label="arrivalCity" onChange={(e) => setArrivalCity(e.target.value)} required />
             </div>
 
             <div className="gc-grid" style={{ gap: 6 }}>
@@ -134,6 +134,7 @@ export default function TripForm({ onTripAdded }: Props) {
                     type="datetime-local"
                     value={departureTime}
                     onChange={(e) => setDepartureTime(e.target.value)}
+                    aria-label="departureTime"
                     required
                 />
             </div>
@@ -143,6 +144,7 @@ export default function TripForm({ onTripAdded }: Props) {
                 <select
                     value={vehicleId ?? ""}
                     onChange={(e) => setVehicleId(e.target.value ? Number(e.target.value) : null)}
+                    aria-label="vehicle"
                     required
                     disabled={vehiclesQuery.isLoading}
                 >
@@ -167,6 +169,7 @@ export default function TripForm({ onTripAdded }: Props) {
                         type="number"
                         min={1}
                         value={availableSeats}
+                        aria-label="seats"
                         onChange={(e) => setAvailableSeats(Number(e.target.value))}
                     />
                 </div>
@@ -177,6 +180,7 @@ export default function TripForm({ onTripAdded }: Props) {
                         min={0}
                         step={0.5}
                         value={pricePerSeat}
+                        aria-label="pricePerSeat"
                         onChange={(e) => setPricePerSeat(Number(e.target.value))}
                     />
                 </div>
@@ -187,6 +191,7 @@ export default function TripForm({ onTripAdded }: Props) {
                         min={1}
                         step={0.1}
                         value={distanceKm}
+                        aria-label="distance"
                         onChange={(e) => setDistanceKm(Number(e.target.value))}
                     />
                 </div>
@@ -196,6 +201,7 @@ export default function TripForm({ onTripAdded }: Props) {
                         type="number"
                         min={1}
                         value={durationMin}
+                        aria-label="duree"
                         onChange={(e) => setDurationMin(Number(e.target.value))}
                     />
                 </div>
@@ -203,7 +209,7 @@ export default function TripForm({ onTripAdded }: Props) {
 
             <div className="gc-grid" style={{ gap: 6 }}>
                 <label>Description (optionnel)</label>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+                <textarea value={description} aria-label="description" onChange={(e) => setDescription(e.target.value)} rows={3} />
                 <small style={{ opacity: 0.7 }}>
                     Le CO₂ économisé par passager est calculé automatiquement par le backend.
                 </small>

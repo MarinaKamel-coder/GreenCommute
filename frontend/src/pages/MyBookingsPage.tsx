@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { bookingService } from '../services/booking.service';
+import { ApiError } from '../services/api';
 
 interface Booking {
   id: number;
@@ -33,20 +34,23 @@ const MyBookingsPage: React.FC = () => {
   const loadBookings = useCallback(async () => {
     try {
       setLoading(true);
+      setError('');
 			if (!token) {
 				setBookings([]);
 				setError('Session invalide: token manquant. Reconnecte-toi.');
 				return;
 			}
 			const data = await bookingService.getMyBookings(token);
-			setBookings(data as Booking[]);
-    } catch (err) {
+			setBookings(Array.isArray(data) ? (data as Booking[]) : []);
+    } catch (err: unknown) {
       setError('Erreur lors du chargement des réservations');
+      setBookings([]);
+      if (err instanceof ApiError && err.status === 401) navigate('/login');
       console.error(err);
     } finally {
       setLoading(false);
     }
-	}, [token]);
+	}, [token, navigate]);
 
   // Charger les réservations
   useEffect(() => {
@@ -107,6 +111,7 @@ const MyBookingsPage: React.FC = () => {
     return Number.isFinite(t) && t < Date.now();
   };
 
+  // Redirection si l'utilisateur n'est pas connecté
   if (!user) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
@@ -149,7 +154,7 @@ const MyBookingsPage: React.FC = () => {
         <div style={{ textAlign: 'center', padding: '40px' }}>
           <p>Chargement...</p>
         </div>
-      ) : bookings.length === 0 ? (
+      ) : (!bookings || bookings.length === 0) ? (
         <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
           <p>Vous n'avez pas encore de réservations</p>
           <button
@@ -176,7 +181,8 @@ const MyBookingsPage: React.FC = () => {
                 border: '1px solid #ddd',
                 borderRadius: '8px',
                 padding: '15px',
-                background: 'white'
+                background: 'white',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -188,7 +194,7 @@ const MyBookingsPage: React.FC = () => {
                     🕐 {formatDate(booking.trip.departureTime)}
                   </p>
                   <p style={{ margin: '5px 0', color: '#666' }}>
-                    👤 {booking.trip.driver.firstName} {booking.trip.driver.lastName}
+                    👤 Chauffeur: {booking.trip.driver.firstName} {booking.trip.driver.lastName}
                   </p>
                 </div>
                 
@@ -198,14 +204,15 @@ const MyBookingsPage: React.FC = () => {
                     background: getStatusColor(booking.status),
                     color: 'white',
                     borderRadius: '4px',
-                    fontSize: '14px'
+                    fontSize: '12px',
+                    fontWeight: 'bold'
                   }}>
-                    {booking.status === 'PENDING' && 'En attente'}
-                    {booking.status === 'ACCEPTED' && 'Acceptée'}
-                    {booking.status === 'REJECTED' && 'Refusée'}
-                    {booking.status === 'CANCELLED' && 'Annulée'}
+                    {booking.status === 'PENDING' && 'EN ATTENTE'}
+                    {booking.status === 'ACCEPTED' && 'ACCEPTÉE'}
+                    {booking.status === 'REJECTED' && 'REFUSÉE'}
+                    {booking.status === 'CANCELLED' && 'ANNULÉE'}
                   </span>
-                  <p style={{ margin: '10px 0 0 0', fontSize: '18px', color: '#1976d2' }}>
+                  <p style={{ margin: '10px 0 0 0', fontSize: '18px', color: '#1976d2', fontWeight: 'bold' }}>
                     {booking.trip.pricePerSeat.toFixed(2)} $
                   </p>
                 </div>
@@ -219,7 +226,7 @@ const MyBookingsPage: React.FC = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center'
               }}>
-                <p style={{ margin: '0', color: '#666', fontSize: '14px' }}>
+                <p style={{ margin: '0', color: '#888', fontSize: '12px' }}>
                   Réservé le {formatDate(booking.createdAt)}
                 </p>
                 
@@ -228,11 +235,12 @@ const MyBookingsPage: React.FC = () => {
                     onClick={() => navigate(`/trip/${booking.trip.id}`)}
                     style={{
                       padding: '8px 16px',
-                      background: 'transparent',
+                      background: 'white',
                       border: '1px solid #1976d2',
                       color: '#1976d2',
                       borderRadius: '4px',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      fontSize: '14px'
                     }}
                   >
                     Voir trajet
@@ -294,7 +302,7 @@ const MyBookingsPage: React.FC = () => {
                       </button>
                     );
                   })()}
-                  
+
                   {(booking.status === 'PENDING' || booking.status === 'ACCEPTED') && (
                     <button
                       onClick={() => handleCancelBooking(booking.id)}
@@ -304,7 +312,8 @@ const MyBookingsPage: React.FC = () => {
                         color: 'white',
                         border: 'none',
                         borderRadius: '4px',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        fontSize: '14px'
                       }}
                     >
                       Annuler

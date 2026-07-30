@@ -77,6 +77,9 @@ export function AppLayout() {
                                 <Link to="/dashboard" className="gc-link">
                                     Dashboard
                                 </Link>
+                                <Link to="/booking" className="gc-link">
+                                    Rechercher
+                                </Link>
                                 <Link to="/my-trips" className="gc-link">
                                     Mes trajets
                                 </Link>

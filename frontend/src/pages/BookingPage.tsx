@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { MapContainer, Marker, Polyline, Popup, TileLayer } from "react-leaflet";
 import { getCityCoords, getMidpoint } from "../utils/geo";
+import { ApiError } from "../services/api";
 
 // Services
 import { tripService } from '../services/trip.service.ts';
@@ -166,6 +167,9 @@ const BookingPage: React.FC = () => {
       void loadTrips(); // Rafraîchir la liste
     } catch (err: unknown) {
 			alert(getErrorMessage(err, 'Erreur lors de la réservation'));
+      if (err instanceof ApiError && err.status === 401) {
+        navigate('/login');
+      }
     }
   };
 
@@ -252,6 +256,7 @@ const BookingPage: React.FC = () => {
             <input
               type="date"
               value={selectedDate}
+              aria-label="date"
               onChange={(e) => setSelectedDate(e.target.value)}
               style={{ 
                 padding: '10px', 

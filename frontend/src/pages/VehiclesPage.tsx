@@ -1,4 +1,3 @@
-
 import { useMemo, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
 import { apiFetch } from "../services/api";
@@ -95,6 +94,7 @@ export function VehiclesPage() {
             <input
               type="number"
               value={form.seats}
+              aria-label="seat"
               onChange={(e) => setForm((f) => ({ ...f, seats: Number(e.target.value) }))}
               min={1}
               max={8}
@@ -109,6 +109,7 @@ export function VehiclesPage() {
               type="number"
               step="0.1"
               value={form.consumption}
+              aria-label="consumption"
               onChange={(e) => setForm((f) => ({ ...f, consumption: Number(e.target.value) }))}
               min={0.1}
               placeholder={`Ex: 7 ${consumptionUnit}`}
@@ -118,7 +119,7 @@ export function VehiclesPage() {
             </small>
           </div>
 
-          <select value={form.fuelType} onChange={(e) => setForm(f => ({...f, fuelType: e.target.value as FuelType}))}>
+          <select value={form.fuelType} aria-label="fuelType" onChange={(e) => setForm(f => ({...f, fuelType: e.target.value as FuelType}))}>
             <option value="ESSENCE">ESSENCE</option>
             <option value="DIESEL">DIESEL</option>
             <option value="ELECTRIQUE">ELECTRIQUE</option>
