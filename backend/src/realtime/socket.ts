@@ -33,9 +33,10 @@ function parseUserIdFromToken(token: string): number | null {
 }
 
 export function initSocket(httpServer: HttpServer) {
+	const corsOrigins = process.env.CORS_ORIGIN?.split(',').map((o) => o.trim()).filter(Boolean);
 	io = new Server(httpServer, {
 		cors: {
-			origin: true,
+			origin: corsOrigins && corsOrigins.length > 0 ? corsOrigins : true,
 			methods: ["GET", "POST", "PATCH", "DELETE"],
 		},
 	});

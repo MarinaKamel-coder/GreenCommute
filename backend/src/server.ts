@@ -22,7 +22,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // --- Middlewares ---
-app.use(cors()); // Autorise le futur Frontend
+// CORS_ORIGIN: liste d'origines autorisées séparées par des virgules (ex: https://mon-app.vercel.app)
+// Si absent, autorise tout (pratique en local, à restreindre en prod).
+const corsOrigins = process.env.CORS_ORIGIN?.split(',').map((o) => o.trim()).filter(Boolean);
+app.use(cors({ origin: corsOrigins && corsOrigins.length > 0 ? corsOrigins : true }));
 app.use(express.json()); // Permet de lire le JSON dans req.body
 
 // --- Routes API ---
